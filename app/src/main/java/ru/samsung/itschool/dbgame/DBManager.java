@@ -25,25 +25,26 @@ public class DBManager {
 		return dbManager;
 	}
 
-	private DBManager(Context context) {
+	int gamesCount;
+	DBManager(Context context) {
 		this.context = context;
 		db = context.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
-		createTablesIfNeedBe(); 
+		createTablesIfNeedBe();
 	}
 
 	void addResult(String username, int score) {
 		db.execSQL("INSERT INTO RESULTS VALUES ('" + username + "', " + score
 				+ ");");
+		gamesCount += 1;
 	}
-	// Player One 150
-	// Запрос
-	// INSERT INTO RESULTS VALUES('Player One', 150);
-
+	int getGamesCount(){
+		return gamesCount;
+	}
 
 
 	ArrayList<Result> getAllResults() {
 		ArrayList<Result> data = new ArrayList<Result>();
-		Cursor cursor = db.rawQuery("SELECT * FROM RESULTS;", null);
+		Cursor cursor = db.rawQuery("SELECT * FROM RESULTS ORDER BY SCORE;", null);
 		boolean hasMoreData = cursor.moveToFirst();
 
 		while (hasMoreData) {
